@@ -7,7 +7,7 @@
             <form method="post" onsubmit="submitForm(event)">
                 <div class="mb-3">
                     <strong>Immagine:</strong>
-                    <input class="js_input_image form-control d-block w-100" />
+                    <input type="file" class="js_input_image form-control d-block w-100">
                     <span class="js_input_image_validation text-danger"></span>
                 </div>
                 <div class="mb-3">
@@ -38,76 +38,62 @@
 @section Scripts {
 
 <script type="text/javascript">
-
-    function submitForm(event) {
-
+    function  submitForm(event) {
         event.preventDefault();
+        const title = document.querySelector('.js_input_title');
+        const description = document.querySelector('.js_input_description');
+        const image = document.querySelector('.js_input_image');
 
-        axios.post('https://localhost:5000/api/Posts', {
-            Title: document.querySelector('.js_input_title').value,
-            Description: document.querySelector('.js_input_description').value,
-            Image: document.querySelector('.js_input_image').value,
-        }).then((res) => {
+        const formData = new FormData();
 
+        if (image.files[0]) formData.append('File',image.files[0]);  
+        if(title.value) formData.append('Title', title.value);
+        if(description.value) formData.append('Description',description.value);
+        console.log(formData);
+         axios({
+        method: "post",
+        url: "https://localhost:5000/api/posts",
+        data: formData,
+        headers: { "Content-Type": "multipart/form-data" },
+        })
+        .then((res) =>{
             console.log('risultato ok', res.data);
-
             // facciamo uscire un alert di avvenuto salvataggio che poi viene rimosso e si torna alla home
             document.querySelector('.js-alert-success').classList.remove('d-none');
-
             setTimeout(function() {
-
                 location.href = "/";
-
             }, 2000);
-
         }).catch((res) => {
-
             console.error('risultato errore', res);
-
             gestisciErroriValidazione(res.response.data.errors);
         });
     }
-
-    // facciamo notare che questa funzione è uguale a quella delle pagina di modifica..si potrebbe accentrare...
+     
     function gestisciErroriValidazione(listaErrori) {
-
         console.error('risultato errore', listaErrori);
-
         pulisciValidazioniForm();
-
         // gestiamo gli errori di validazione
         if (listaErrori.Image != undefined) {
-
             listaErrori.Image.forEach(errorMessage => {
-
                 document.querySelector('.js_input_image_validation').innerHTML += errorMessage + '<br>';
             })
         }
-
         if (listaErrori.Title != undefined) {
-
             listaErrori.Title.forEach(errorMessage => {
-
                 document.querySelector('.js_input_title_validation').innerHTML += errorMessage + '<br>';
             })
         }
-
         if (listaErrori.Description != undefined) {
-
             listaErrori.Description.forEach(errorMessage => {
-
                 document.querySelector('.js_input_description_validation').innerHTML += errorMessage + '<br>';
             })
         }
     }
-
     function pulisciValidazioniForm() {
-
         document.querySelector('.js_input_title_validation').innerHTML = '';
         document.querySelector('.js_input_description_validation').innerHTML = '';
         document.querySelector('.js_input_image_validation').innerHTML = '';
     }
-
 </script>
 
 }
