@@ -40,6 +40,7 @@
 <script type="text/javascript">
     function  submitForm(event) {
         event.preventDefault();
+
         const title = document.querySelector('.js_input_title');
         const description = document.querySelector('.js_input_description');
         const image = document.querySelector('.js_input_image');
@@ -49,7 +50,9 @@
         if (image.files[0]) formData.append('File',image.files[0]);  
         if(title.value) formData.append('Title', title.value);
         if(description.value) formData.append('Description',description.value);
+
         console.log(formData);
+
          axios({
         method: "post",
         url: "https://localhost:5000/api/posts",
