@@ -56,7 +56,8 @@
 
 			document.querySelector('.js_input_title').value = res.data.title;
 			document.querySelector('.js_input_description').value = res.data.description;
-			document.querySelector('.js_input_image').value = res.data.image;
+            document.querySelector('.js_input_image').value = '';
+			document.querySelector('.js_img').src = res.data.image;
 
 		}).catch((res) => {
 
